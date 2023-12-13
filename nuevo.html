@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo HTML</title>
+</head>
+
+<body>
+    <h1>Datos del formulario</h1>
+
+    <div id="datos-container">
+        <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+        <p><strong>Apellido:</strong> <span id="apellido"></span></p>
+        <p><strong>Número de teléfono:</strong> <span id="telefono"></span></p>
+        <p><strong>Correo electrónico:</strong> <span id="correo"></span></p>
+        <p><strong>Comentario:</strong> <span id="comentario"></span></p>
+    </div>
+
+    <script>
+        // Obtener los valores del formulario desde el almacenamiento local
+        const nombre = localStorage.getItem('nombre');
+        const apellido = localStorage.getItem('apellido');
+        const telefono = localStorage.getItem('telefono');
+        const correo = localStorage.getItem('correo');
+        const comentario = localStorage.getItem('comentario');
+
+        // Mostrar los valores en el HTML
+        document.getElementById('nombre').textContent = nombre;
+        document.getElementById('apellido').textContent = apellido;
+        document.getElementById('telefono').textContent = telefono;
+        document.getElementById('correo').textContent = correo;
+        document.getElementById('comentario').textContent = comentario;
+
+        // Limpiar los datos almacenados en el almacenamiento local
+        localStorage.clear();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/pulse/bootstrap.min.css">
+    <style>
+        /* Estilos para centrar el formulario */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: linear-gradient(to bottom right, #E57874, #FFC5C2);
+        }
+
+        .form-container {
+            width: 400px;
+        }
+        
+        .btn-neon{
+  position: relative;
+  display: inline-block;
+  padding: 10px 10px;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-decoration: none;
+  font-size: 25px;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.btn-neon span{
+  position: absolute;
+  display: block;
+}
+#span1{
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent,#ffffff);
+}
+.btn-neon:hover #span1{
+  left: 100%;
+  transition: 1s;
+  transition-delay: 0.1s;
+}
+#span3{
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent,#ffffff);
+}
+.btn-neon:hover #span3{
+  right: 100%;
+  transition: 1s;
+  transition-delay: 0.1s;
+}
+
+        
+
+    </style>
+</head>
+<li><a href="index.html" class="btn-neon">
+    <span id="span1"></span>
+    <span id="span2"></span>
+    <span id="span3"></span>
+    <span id="span4"></span>
+    <h4>Volver</h4><i class="fa-solid fa-house"></i>
+</a></li>
+<body>
+    <img src="Imagenes/Jugeríatxt.png" alt="">
+    <div class="form-container">
+        <div class="card-body">
+            <form id="task-form">
+                <div class="form-group">
+                    <input type="text" id="name" class="form-control" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="last-name" class="form-control" placeholder="Apellido">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="phone-number" class="form-control" placeholder="Número de teléfono">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" class="form-control" placeholder="Correo electrónico">
+                </div>
+                <div class="form-group">
+                    <textarea id="comment" class="form-control" placeholder="Comentario"></textarea>
+                </div>
+                <button class="btn btn-primary" id="btn-task-form">
+                    Guardar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importar las funciones necesarias de los SDKs requeridos
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore.js";
+
+        // Configuración de tu aplicación de Firebase
+        const firebaseConfig = {
+    apiKey: "AIzaSyBuQfhwDObV4Z-nqwv9Bi4LijuQ7z2dk7w",
+    authDomain: "ciberpe-5f0cd.firebaseapp.com",
+    projectId: "ciberpe-5f0cd",
+    storageBucket: "ciberpe-5f0cd.appspot.com",
+    messagingSenderId: "1094933241613",
+    appId: "1:1094933241613:web:c45fdbaf924259cd33da44"
+  };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Inicializar Cloud Firestore y obtener una referencia al servicio
+        const db = getFirestore(app);
+
+        const form = document.getElementById('task-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Obtener referencias a los elementos del formulario
+            const nameInput = document.getElementById('name');
+            const lastNameInput = document.getElementById('last-name');
+            const phoneNumberInput = document.getElementById('phone-number');
+            const emailInput = document.getElementById('email');
+            const commentInput = document.getElementById('comment');
+
+            // Obtener los valores ingresados por el usuario
+            const name = nameInput.value;
+            const lastName = lastNameInput.value;
+            const phoneNumber = phoneNumberInput.value;
+            const email = emailInput.value;
+            const comment = commentInput.value;
+
+            try {
+                // Agregar un documento a la colección "tentradas" en Firestore
+                const docRef = await addDoc(collection(db, "tentradas"), {
+                    nombre: name,
+                    apellido: lastName,
+                    telefono: phoneNumber,
+                    correo: email,
+                    comentario: comment
+                });
+                console.log("Documento creado con ID:", docRef.id);
+
+                // Almacenar los valores en el almacenamiento local
+                localStorage.setItem('nombre', name);
+                localStorage.setItem('apellido', lastName);
+                localStorage.setItem('telefono', phoneNumber);
+                localStorage.setItem('correo', email);
+                localStorage.setItem('comentario', comment);
+
+                // Redirigir a nuevo.html después de enviar el formulario
+                window.location.href = "nuevo.html";
+            } catch (e) {
+                console.error("Error al agregar el documento:", e);
+            }
+
+            // Limpiar los campos del formulario después de enviarlo
+            nameInput.value = '';
+            lastNameInput.value = '';
+            phoneNumberInput.value = '';
+            emailInput.value = '';
+            commentInput.value = '';
+        });
+    </script>
+</body>
+
+</html>
+

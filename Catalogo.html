@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras</title>
+  <link rel="stylesheet" href="Catalogo.css">
+  <link rel="stylesheet" href="Catalogo.java">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    
+    .cart-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    .cart-item-title {
+      font-weight: bold;
+    }
+
+    .cart-total {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .add-to-cart {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #DB241B;
+      color: #fff;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-to-cart:hover {
+      background-color: #E57874;
+    }
+
+    img {
+    width: 250px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js" type="module"></script>
+</head>
+
+<body>
+  <img src="Imagenes/LOGO.png" alt="">
+  <div class="slider-txt"><h1>Disfruta nuestra variedad de jugos</h1></div>
+  <div>
+    <li><a href="index.html" class="btn-neon">
+      <span id="span1"></span>
+      <span id="span2"></span>
+      <span id="span3"></span>
+      <span id="span4"></span>
+      <h4>Volver</h4><i class="fa-solid fa-house"></i>
+  </a>
+    <div class="products">
+      <div class="product">
+        <div class="image-gallery"><img src="Jugos/Jugo de fresa.jpg" alt="Producto 1"></div>
+        <div class="centered-text">
+          <p class="product-title">Jugo de fresa</p>
+          <p class="product-price">S/5</p>
+          <button class="add-to-cart" data-id="1">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="image-gallery"><img src="Jugos/Jugo de mango y banana.webp" alt="Producto 1"></div>
+        <div class="centered-text">
+          <p class="product-title">Jugo de mango y banana</p>
+          <p class="product-price">S/5</p>
+          <button class="add-to-cart" data-id="2">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="image-gallery"><img src="Jugos/Jugo de naranja.jpg" alt="Producto 1"></div>
+        <div class="centered-text">
+          <p class="product-title">Jugo de naranja</p>
+          <p class="product-price">S/5</p>
+          <button class="add-to-cart" data-id="3">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="image-gallery"><img src="Jugos/Jugo de piña.jpg" alt="Producto 1"></div>
+        <div class="centered-text">
+          <p class="product-title">Jugo de piña</p>
+          <p class="product-price">S/5</p>
+          <button class="add-to-cart" data-id="4">Agregar al carrito</button>
+        </div>
+      </div>
+      <img src="Imagenes/Jugeríatxt.png" alt="">
+      <div class="product">
+        <div class="image-gallery"><img src="Jugos/Jugo de sandia.jpg" alt="Producto 1"></div>
+        <div class="centered-text">
+          <p class="product-title">Jugo de sandia</p>
+          <p class="product-price">S/5</p>
+          <button class="add-to-cart" data-id="5">Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <img src="Imagenes/Carrito.png" alt="">
+    <div class="cart-container">
+      <div class="cart-items"></div>
+      <p class="cart-total">Total: S/0</p>
+    </div>
+  </div>
+
+  <button id="login-button">Iniciar sesión</button>
+  <button id="logout-button">Cerrar sesión</button>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyBuQfhwDObV4Z-nqwv9Bi4LijuQ7z2dk7w",
+    authDomain: "ciberpe-5f0cd.firebaseapp.com",
+    projectId: "ciberpe-5f0cd",
+    storageBucket: "ciberpe-5f0cd.appspot.com",
+    messagingSenderId: "1094933241613",
+    appId: "1:1094933241613:web:c45fdbaf924259cd33da44"
+  };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Obtén una referencia al módulo de autenticación de Firebase
+    const auth = getAuth();
+
+    // Obtén los elementos del DOM
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const cartTotalElement = document.querySelector('.cart-total');
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+
+    // Array para almacenar los productos en el carrito
+    const cartItems = [];
+
+    // Agrega un producto al carrito
+    function addToCart(event) {
+      // Verifica si el usuario ha iniciado sesión
+      if (!isUserLoggedIn()) {
+        alert("Debes iniciar sesión para agregar productos al carrito.");
+        redirectToLogin();
+        return;
+      }
+
+      const button = event.target;
+      const product = button.parentElement;
+      const productId = button.dataset.id;
+      const title = product.querySelector('.product-title').textContent;
+      const price = product.querySelector('.product-price').textContent;
+
+      // Verifica si el producto ya está en el carrito
+      const existingItem = cartItems.find(item => item.id === productId);
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        cartItems.push({ id: productId, title, price, quantity: 1 });
+      }
+
+      // Actualiza el carrito en el DOM
+      updateCart();
+    }
+
+    // Actualiza el carrito en el DOM
+    function updateCart() {
+      cartItemsContainer.innerHTML = '';
+
+      let total = 0;
+
+      cartItems.forEach(item => {
+        const cartItemElement = document.createElement('div');
+        cartItemElement.classList.add('cart-item');
+
+        cartItemElement.innerHTML = `
+          <p class="cart-item-title">${item.title}</p>
+          <p class="cart-item-price">${item.price}</p>
+          <p class="cart-item-quantity">Cantidad: ${item.quantity}</p>
+        `;
+
+        cartItemsContainer.appendChild(cartItemElement);
+
+        const itemTotal = parseInt(item.price.slice(2)) * item.quantity; // Ignora el primer caracter "S/"
+        total += itemTotal;
+      });
+
+      cartTotalElement.textContent = `Total: S/${total}`;
+    }
+
+    // Verifica si el usuario ha iniciado sesión
+    function isUserLoggedIn() {
+      const user = auth.currentUser;
+      return !!user;
+    }
+
+    // Redirige al usuario al inicio de sesión
+    function redirectToLogin() {
+      window.location.href = "login.html";
+    }
+
+    // Cierra la sesión del usuario y redirige al registro
+    function logout() {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+
+    // Manejador del evento de clic en el botón de inicio de sesión
+    loginButton.addEventListener('click', redirectToLogin);
+
+    // Manejador del evento de clic en el botón de cierre de sesión
+    logoutButton.addEventListener('click', logout);
+
+    // Agrega el evento de clic a los botones "Agregar al carrito"
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', addToCart);
+    });
+
+    // Verificar la autenticación al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // El usuario está autenticado
+          document.querySelector('.cart-items').style.display = 'block';
+          document.querySelector('.cart-total').style.display = 'block';
+          loginButton.style.display = 'none';
+          logoutButton.style.display = 'block';
+        } else {
+          // El usuario no está autenticado
+          document.querySelector('.cart-items').style.display = 'none';
+          document.querySelector('.cart-total').style.display = 'none';
+          loginButton.style.display = 'block';
+          logoutButton.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

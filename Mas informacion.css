@@ -1,0 +1,16 @@
+body {
+    background-color: #ffdbdb;
+    font-family: "Poppins", sans-serif;
+  }
+  
+.slider-txt h1 {
+    font-size: 70px;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  p {
+    font-weight: bold;
+    color: black;
+  }
